@@ -14,7 +14,7 @@ import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { existsSync, readFileSync, mkdirSync, writeFileSync, readdirSync, statSync, renameSync } from "node:fs";
 import { join, resolve, basename, relative } from "node:path";
 import { homedir } from "node:os";
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 
 export default function (pi: ExtensionAPI) {
   // ─── Vault Resolution ────────────────────────────────────────
@@ -79,9 +79,9 @@ export default function (pi: ExtensionAPI) {
     }
   }
 
-  function safeExec(cmd: string, cwd: string): string {
+  function safeExecFile(bin: string, args: string[], cwd: string): string {
     try {
-      return execSync(cmd, { cwd, timeout: 5000, encoding: "utf-8" }).trim();
+      return execFileSync(bin, args, { cwd, timeout: 5000, encoding: "utf-8" }).trim();
     } catch {
       return "";
     }
@@ -102,8 +102,8 @@ export default function (pi: ExtensionAPI) {
     // Workspace tree (3 levels, .md files only)
     lines.push("### Workspace Structure");
     lines.push("");
-    const tree = safeExec(
-      `tree -L 3 --charset ascii -I '.git|node_modules|.pi' -P '*.md' .`,
+    const tree = safeExecFile(
+      "tree", ["-L", "3", "--charset", "ascii", "-I", ".git|node_modules|.pi", "-P", "*.md", "."],
       vaultPath
     );
     if (tree) {
@@ -112,13 +112,13 @@ export default function (pi: ExtensionAPI) {
       lines.push("```");
     } else {
       // Fallback without tree command
-      const findResult = safeExec(
-        `find . -name "*.md" -not -path "./.git/*" -not -path "*/node_modules/*" -maxdepth 3 | sort`,
+      const findResult = safeExecFile(
+        "find", [".", "-name", "*.md", "-not", "-path", "./.git/*", "-not", "-path", "*/node_modules/*", "-maxdepth", "3"],
         vaultPath
       );
       if (findResult) {
         lines.push("```");
-        lines.push(findResult);
+        lines.push(findResult.split("\n").sort().join("\n"));
         lines.push("```");
       }
     }
@@ -239,9 +239,9 @@ export default function (pi: ExtensionAPI) {
 
       // Git commit session start
       if (readVaultConfig(vaultPath, "git") === "true") {
-        safeExec(`git -C "${vaultPath}" add ops/sessions/ 2>/dev/null`, vaultPath);
-        safeExec(
-          `git -C "${vaultPath}" commit -m "Session start: ${timestamp}" --quiet --no-verify 2>/dev/null`,
+        safeExecFile("git", ["-C", vaultPath, "add", "ops/sessions/"], vaultPath);
+        safeExecFile(
+          "git", ["-C", vaultPath, "commit", "-m", `Session start: ${timestamp}`, "--quiet", "--no-verify"],
           vaultPath
         );
       }
@@ -321,42 +321,35 @@ export default function (pi: ExtensionAPI) {
     const relToVault = relative(vaultPath, absPath);
     if (relToVault.startsWith("..")) return;
 
-    // Non-blocking async commit
+    // Non-blocking async commit — scoped to written file only
     (async () => {
       try {
         // Check if vault is a git repo
-        const isGit = safeExec(`git -C "${vaultPath}" rev-parse --is-inside-work-tree`, vaultPath);
+        const isGit = safeExecFile("git", ["-C", vaultPath, "rev-parse", "--is-inside-work-tree"], vaultPath);
         if (isGit !== "true") return;
 
-        // Stage all vault changes
-        safeExec(`git -C "${vaultPath}" add -A`, vaultPath);
+        // Stage ONLY the written file (not -A which would grab unrelated changes)
+        safeExecFile("git", ["-C", vaultPath, "add", "--", absPath], vaultPath);
 
-        // Check for staged changes
-        const hasChanges = safeExec(
-          `git -C "${vaultPath}" diff --cached --quiet 2>/dev/null; echo $?`,
-          vaultPath
-        );
-        if (hasChanges === "0") return; // No changes
-
-        // Build commit message
-        const changedFiles = safeExec(
-          `git -C "${vaultPath}" diff --cached --name-only`,
-          vaultPath
-        );
-        const fileList = changedFiles.split("\n").filter(Boolean);
-        const fileCount = fileList.length;
-
-        let msg: string;
-        if (fileCount === 1) {
-          msg = `Auto: ${fileList[0]}`;
-        } else {
-          msg = `Auto: ${fileCount} files`;
+        // Also stage ops/sessions/ if it exists (session tracking files)
+        const sessionsDir = join(vaultPath, "ops", "sessions");
+        if (existsSync(sessionsDir)) {
+          safeExecFile("git", ["-C", vaultPath, "add", "--", "ops/sessions/"], vaultPath);
         }
 
-        safeExec(
-          `git -C "${vaultPath}" commit -m "${msg}" --no-verify`,
-          vaultPath
-        );
+        // Check for staged changes
+        try {
+          execFileSync("git", ["-C", vaultPath, "diff", "--cached", "--quiet"], {
+            cwd: vaultPath, timeout: 5000,
+          });
+          return; // Exit code 0 = no staged changes
+        } catch {
+          // Exit code 1 = has staged changes — continue
+        }
+
+        // Commit with file-path-safe message (no shell interpolation)
+        const msg = `Auto: ${relToVault}`;
+        safeExecFile("git", ["-C", vaultPath, "commit", "-m", msg, "--no-verify"], vaultPath);
       } catch {
         // Silent failure — auto-commit is best-effort
       }

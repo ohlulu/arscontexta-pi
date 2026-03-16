@@ -1615,15 +1615,15 @@ Show available commands in the user's vocabulary. Resolve command names from `op
 ```
 Here's what you can do:
 
-  /arscontexta:[domain:reduce]    -- extract insights from source material
-  /arscontexta:[domain:reflect]   -- find connections between your [domain:notes]
-  /arscontexta:health             -- check your knowledge system
-  /arscontexta:help               -- see everything available
-  /arscontexta:next               -- get intelligent next-action recommendations
-  /arscontexta:learn              -- research a topic and grow your graph
+  /skill:reduce    -- extract insights from source material
+  /skill:reflect   -- find connections between your [domain:notes]
+  /skill:health             -- check your knowledge system
+  /skill:help               -- see everything available
+  /skill:next               -- get intelligent next-action recommendations
+  /skill:learn              -- research a topic and grow your graph
 ```
 
-Note: Plugin commands use the format `/arscontexta:command-name`. List all commands explicitly since they may not appear in tab completion. If skills were generated, note they require a Claude Code restart.
+Note: Plugin commands use the format `/skill:command-name`. List all commands explicitly since they may not appear in tab completion. 
 
 ### First-Success Moment
 
@@ -1660,7 +1660,7 @@ Created:
   [context file name]
   [templates created]
   16 skills generated (vocabulary-transformed)
-  10 plugin commands available via /arscontexta:*
+  26 skill commands available via /skill:*
   [hooks configured]
   ops/derivation.md      -- the complete record of how this system was derived
   ops/derivation-manifest.md -- machine-readable config for runtime skills
@@ -1676,10 +1676,10 @@ IMPORTANT: Restart Claude Code now to activate skills and hooks.
 Next steps:
   1. Quit and restart Claude Code (required — skills won't work until you do)
   2. Read your CLAUDE.md -- it's your complete methodology
-  3. Try /arscontexta:help to see all available commands
+  3. Try /skill:help to see all available commands
   4. [If qmd not installed: "Install qmd for semantic search: npm install -g @tobilu/qmd (or bun install -g @tobilu/qmd), then run qmd init, qmd update, qmd embed"]
-  5. [If personality not enabled: "Run /arscontexta:architect later to tune the agent's voice"]
-  6. Try /arscontexta:tutorial for a guided walkthrough
+  5. [If personality not enabled: "Run /skill:architect later to tune the agent's voice"]
+  6. Try /skill:tutorial for a guided walkthrough
 
 ```
 
@@ -1687,7 +1687,7 @@ Next steps:
 
 Include these based on system state:
 - If qmd not installed and semantic-search is active: npm/bun install instructions + qmd init/update/embed + `.mcp.json` contract
-- If personality not enabled: mention `/arscontexta:architect` for future voice tuning once the vault has 50+ notes
+- If personality not enabled: mention `/skill:architect` for future voice tuning once the vault has 50+ notes
 - If any kernel checks failed: specific remediation instructions
 
 ---

@@ -331,7 +331,7 @@ Extract the pipeline position (what comes before and after this skill) to show w
 - No ANSI color codes
 - No emoji
 - Monospaced alignment assumed
-- Display short command forms (`/reduce`), not plugin-qualified forms (`/arscontexta:reduce`)
+- Display short command forms (`/reduce`), not plugin-qualified forms (`/skill:reduce`)
 - Domain-native names in curly braces (e.g., `/{reduce}`) are resolved from derivation-manifest.md
 - When domain name equals universal name, drop the braces
 
