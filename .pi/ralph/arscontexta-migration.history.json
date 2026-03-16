@@ -1,0 +1,29 @@
+[
+  {
+    "iteration": 1,
+    "startedAt": "2026-03-16T07:47:13.013Z",
+    "endedAt": "2026-03-16T07:47:44.133Z",
+    "durationMs": 31120,
+    "toolCalls": 9,
+    "checklistDelta": 5,
+    "wasReflection": false
+  },
+  {
+    "iteration": 2,
+    "startedAt": "2026-03-16T07:47:44.132Z",
+    "endedAt": "2026-03-16T07:49:28.139Z",
+    "durationMs": 104007,
+    "toolCalls": 13,
+    "checklistDelta": 12,
+    "wasReflection": false
+  },
+  {
+    "iteration": 3,
+    "startedAt": "2026-03-16T07:49:28.138Z",
+    "endedAt": "2026-03-16T07:51:25.703Z",
+    "durationMs": 117565,
+    "toolCalls": 13,
+    "checklistDelta": 5,
+    "wasReflection": false
+  }
+]

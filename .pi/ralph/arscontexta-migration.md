@@ -21,25 +21,25 @@ Migrate `bak/` (Claude Code plugin) to `.pi/` (pi coding agent) per `.pi/MIGRATI
 - [x] Copy `bak/presets/` → `.pi/reference/presets/` (3 preset dirs)
 
 ### Phase 2: Port Skills (26 total)
-- [ ] Port `help` (standalone, validates basic skill loading)
-- [ ] Port `stats`, `tasks`, `next`, `graph` (read-only, no deps)
-- [ ] Port `validate`, `verify`, `health` (quality gates)
-- [ ] Port `seed`, `reduce`, `reflect`, `reweave` (pipeline core)
-- [ ] Port `pipeline`, `ralph` (orchestrators)
-- [ ] Port `learn`, `remember`, `rethink`, `refactor` (meta skills)
-- [ ] Port `setup`, `tutorial`, `ask`, `recommend`, `architect` (platform skills)
-- [ ] Port `reseed`, `upgrade`, `add-domain` (advanced lifecycle)
-- [ ] All skills: replace `${CLAUDE_PLUGIN_ROOT}` → relative paths
-- [ ] All skills: remove `context: fork`, `model: opus/sonnet` from frontmatter
-- [ ] All skills: replace `mcp__qmd__*` → qmd CLI calls; update `allowed-tools`
-- [ ] All skills: add vault path resolution instruction header
+- [x] Port `help` (standalone, validates basic skill loading)
+- [x] Port `stats`, `tasks`, `next`, `graph` (read-only, no deps)
+- [x] Port `validate`, `verify`, `health` (quality gates)
+- [x] Port `seed`, `reduce`, `reflect`, `reweave` (pipeline core)
+- [x] Port `pipeline`, `ralph` (orchestrators)
+- [x] Port `learn`, `remember`, `rethink`, `refactor` (meta skills)
+- [x] Port `setup`, `tutorial`, `ask`, `recommend`, `architect` (platform skills)
+- [x] Port `reseed`, `upgrade`, `add-domain` (advanced lifecycle)
+- [x] All skills: replace `${CLAUDE_PLUGIN_ROOT}` → relative paths
+- [x] All skills: remove `context: fork`, `model: opus/sonnet` from frontmatter
+- [x] All skills: replace `mcp__qmd__*` → qmd CLI calls; update `allowed-tools`
+- [x] All skills: add vault path resolution instruction header
 
 ### Phase 3: Extension
-- [ ] Create `.pi/extensions/arscontexta-hooks/index.ts`
-- [ ] Implement `resolveVaultPath()` (cwd marker OR ~/.config/arscontexta.yaml)
-- [ ] Implement session-orient handler (tree + identity + goals + maintenance signals)
-- [ ] Implement write-validate handler (schema check on vault notes)
-- [ ] Implement auto-commit handler (git -C vaultPath)
+- [x] Create `.pi/extensions/arscontexta-hooks/index.ts`
+- [x] Implement `resolveVaultPath()` (cwd marker OR ~/.config/arscontexta.yaml)
+- [x] Implement session-orient handler (tree + identity + goals + maintenance signals)
+- [x] Implement write-validate handler (schema check on vault notes)
+- [x] Implement auto-commit handler (git -C vaultPath)
 
 ### Phase 4: Agent
 - [ ] Port `knowledge-guide` agent definition
