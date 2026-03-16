@@ -39,11 +39,11 @@ Read these files to understand the methodology and available components. Read th
 
 Automated. No user interaction needed.
 
-Verify Claude Code environment:
+Detect pi agent environment:
 
 ```
 Check filesystem:
-  .claude/ directory exists         -> platform = "claude-code"
+  .pi/ directory exists             -> platform = "pi"
   Neither                           -> platform = "minimal"
   Existing .md notes detected       -> note for proposal (V1: acknowledge and proceed fresh)
 ```
@@ -52,7 +52,7 @@ Record the platform tier in working memory. It controls which artifacts get gene
 
 | Platform | Context File | Skills Location | Hooks | Automation Ceiling |
 |----------|-------------|-----------------|-------|--------------------|
-| Claude Code | CLAUDE.md | .claude/skills/ | .claude/hooks/ | Full |
+| pi | CLAUDE.md | .pi/skills/ | .pi/extensions/ (TypeScript) | Full |
 | Minimal | README.md | (none) | (none) | Convention only |
 
 ---
@@ -547,7 +547,7 @@ engine_version: "1.0.0"
 | [additional terms] | [domain terms] | [category] |
 
 ## Platform
-- Tier: [Claude Code / Minimal]
+- Tier: [pi / Minimal]
 - Automation level: [full / convention / manual]
 - Automation: [full (default) / convention / manual]
 
@@ -623,7 +623,7 @@ The inbox folder is always generated. It provides zero-friction capture regardle
 
 This is the most critical generation step. The context file IS the system.
 
-**For Claude Code:** Generate `CLAUDE.md` using `../../reference/generators/claude-md.md` template.
+**For pi:** Generate `CLAUDE.md` using `../../reference/generators/claude-md.md` template.
 **For Minimal:** Generate `README.md` as self-contained conventions document.
 
 **Context file composition algorithm:**
@@ -1112,7 +1112,7 @@ Generate the machine-readable derivation manifest. This is the KEY file that ena
 engine_version: "0.2.0"
 research_snapshot: "2026-02-10"
 generated_at: [ISO 8601 timestamp]
-platform: [claude-code | minimal]
+platform: [pi | minimal]
 kernel_version: "1.0"
 
 dimensions:
@@ -1297,10 +1297,10 @@ The 16 skill sources to install:
 For each skill:
 1. Read `../../skills/[name]/SKILL.md`
 2. Apply vocabulary transformation — rename and update ALL internal references using the vocabulary mapping from `ops/derivation.md`
-3. Adjust skill metadata (set `context: fork` for fresh context per invocation)
+3. Adjust skill metadata (ensure frontmatter follows Agent Skills spec)
 4. Write the transformed SKILL.md to the user's skills directory
 
-**For Claude Code:** Write to `.claude/skills/[domain-skill-name]/SKILL.md`
+**For pi:** Write to `.pi/skills/[domain-skill-name]/SKILL.md` inside the vault directory.
 
 **CRITICAL:** Do NOT generate skills from scratch or improvise their content. Read the source template and transform it. The templates contain quality gates, anti-shortcut language, and handoff formats that must be preserved.
 
@@ -1312,115 +1312,75 @@ Every generated skill must include:
 
 ##### Skill Discoverability Protocol
 
-**Platform limitation:** Claude Code's skill index does not refresh mid-session. Skills created during /setup are not discoverable until the user restarts Claude Code.
+After creating ALL skill files in the vault's `.pi/skills/`:
 
-After creating ALL skill files:
-
-1. **Inform the user:** Display "Generated [N] skills. Restart Claude Code to activate them."
-2. **Add to context file:** Include a "Recently Created Skills (Pending Activation)" section listing all generated skills with their domain-native names and creation timestamp:
+1. **Inform the user:** Display "Generated [N] skills. Run `/reload` to activate them."
+2. **Add to context file:** Include a "Recently Created Skills" section listing all generated skills:
 
 ```markdown
-## Recently Created Skills (Pending Activation)
+## Recently Created Skills
 
-These skills were created during initialization. Restart Claude Code to activate them.
-- /[domain:reduce] -- Extract insights from source material (created [timestamp])
-- /[domain:reflect] -- Find connections between [domain:notes] (created [timestamp])
+Skills generated during initialization. Use `/reload` to activate, then try `/skill:[domain:help]`.
+- /skill:[domain:reduce] -- Extract insights from source material
+- /skill:[domain:reflect] -- Find connections between [domain:notes]
 ...
 ```
 
-3. **SessionStart hook detects activation:** The session-orient.sh hook checks for this section. Once skills are confirmed loaded (appear in skill index), the section can be removed from the context file.
-4. **Phase 6 guidance:** If any skills were created, Phase 6 output includes: "Restart Claude Code now to activate all skills, then try /[domain:help] to see what's available."
+3. **Phase 6 guidance:** Output includes: "Run `/reload` to activate all skills, then try `/skill:[domain:help]` to see what's available."
 
 ---
 
-#### Step 10: Hooks (platform-appropriate)
+#### Step 10: Extension Setup (pi platform)
 
 **Re-read `ops/derivation.md`** for automation level, platform tier, and vocabulary mapping.
 
-##### Additive Hook Merging Protocol
+##### Extension Architecture
 
-Generated hooks MUST NOT overwrite existing user hooks. Before writing any hooks:
+In pi, hooks are implemented as a single TypeScript extension: `arscontexta-hooks`.
+This extension is installed globally at `~/.pi/agent/extensions/arscontexta-hooks/` and provides:
 
-1. Read existing `.claude/settings.json` (if it exists)
-2. Parse existing hook matcher groups for each event type (hooks.SessionStart, hooks.PostToolUse, hooks.Stop, etc.)
-3. ADD new matcher groups to the event arrays -- never replace existing entries
-4. If a matcher group with the same `command` path already exists for that event, SKIP it (warn in output, don't overwrite)
-5. Write the merged result back to `.claude/settings.json`
+1. **Session Orient** (`session_start`) — injects vault tree, identity, goals, maintenance signals
+2. **Write Validate** (`tool_result` on write/edit) — schema enforcement on notes
+3. **Auto Commit** (`tool_result` on write/edit) — scoped git auto-commit
 
-**Validation criterion:** After hook generation, all pre-existing hooks are still present and functional.
+The extension resolves the vault via:
+- `.arscontexta` marker in cwd, OR
+- `~/.config/arscontexta.yaml` → `default_vault` path
 
 ##### Session Persistence Architecture
 
-Session persistence is critical for continuity across /clear and session restarts.
+Session persistence is critical for continuity across session restarts.
 
 **Session data layout:**
 ```
 ops/
 ├── sessions/
-│   ├── current.json          # Active session state (updated by hooks)
+│   ├── current.json          # Active session state (updated by extension)
 │   └── YYYYMMDD-HHMMSS.json  # Archived session records
-├── goals.md                  # Persistent working memory (survives /clear)
+├── goals.md                  # Persistent working memory
 └── config.yaml               # Live configuration
 ```
 
-`current.json` tracks: session_id, start_time, notes_created (array), notes_modified (array), discoveries (array), last_activity timestamp.
+`current.json` tracks: started timestamp, status.
 
-**Session ID derivation:** Use `CLAUDE_CONVERSATION_ID` environment variable (available in Claude Code hook environment). Fallback to timestamp: `$(date +%Y%m%d-%H%M%S)`.
+**Session restore:** When a new session starts, the extension detects existing session data (goals.md, ops/ state), re-reads everything, and provides continuity.
 
-**Session restore on /clear:** When a user runs /clear, SessionStart fires for the new conversation. The hook detects existing session data (goals.md, ops/ state), re-reads everything, and provides continuity despite context reset.
+##### Setup Instructions for User
 
-##### Full Hook Suite (generated for all systems)
+After vault generation, instruct the user:
 
-For Claude Code, add to `.claude/settings.json` (using additive merge).
-
-**Hook format:** Claude Code uses a nested matcher-group structure. Each event type contains an array of matcher groups, each with an optional `matcher` (regex string filtering when the hook fires) and a `hooks` array of handler objects. Events like `SessionStart` and `Stop` don't need matchers — omit the field. Tool events like `PostToolUse` use the tool name as matcher (e.g., `"Write"`, `"Edit|Write"`). Timeout is in seconds.
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/session-orient.sh"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/validate-note.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/auto-commit.sh",
-            "async": true
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/session-capture.sh"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-**Critical:** The old flat format (`"type": "command"` at the matcher level) is rejected by Claude Code. Each event must use the nested structure: `"EventName": [{ "matcher": "...", "hooks": [{ "type": "command", "command": "..." }] }]`.
-
-Generate all four hook scripts: session-orient.sh, session-capture.sh, validate-note.sh, auto-commit.sh.
+1. **Verify extension is installed:** Check `~/.pi/agent/extensions/arscontexta-hooks/index.ts` exists
+2. **Create vault config:** If not already present, create `~/.config/arscontexta.yaml`:
+   ```yaml
+   default_vault: [absolute path to vault]
+   ```
+3. **Create vault marker:** Write `.arscontexta` in vault root:
+   ```
+   # Ars Contexta vault marker + config
+   git: true
+   session_capture: true
+   ```
+4. **Reload:** Run `/reload` to activate the extension in the current session
 
 ---
 
@@ -1480,7 +1440,7 @@ Welcome to your [domain] system.
 
 **Re-read `ops/derivation.md`** and the generated templates for schema fields.
 
-After creating templates (Step 8), read the `_schema` blocks and generate domain-adapted analysis scripts in `ops/queries/` (or `scripts/queries/` for Claude Code).
+After creating templates (Step 8), read the `_schema` blocks and generate domain-adapted analysis scripts in `ops/queries/` (or `scripts/queries/`).
 
 **Generation algorithm:**
 1. Read all `_schema.required` and `_schema.optional` fields from generated templates
@@ -1651,7 +1611,7 @@ ars contexta
 Your [domain] system is ready.
 
 Configuration:
-  Platform:        [Claude Code / Minimal]
+  Platform:        [pi / Minimal]
   Automation: Full — all capabilities from day one
   [Key dimension highlights relevant to the user]
 
@@ -1659,25 +1619,22 @@ Created:
   [list of folders with domain names]
   [context file name]
   [templates created]
-  16 skills generated (vocabulary-transformed)
+  16 skills generated (vocabulary-transformed) in .pi/skills/
   26 skill commands available via /skill:*
-  [hooks configured]
-  ops/derivation.md      -- the complete record of how this system was derived
+  .arscontexta             -- vault marker + config
+  ops/derivation.md        -- the complete record of how this system was derived
   ops/derivation-manifest.md -- machine-readable config for runtime skills
-  ops/methodology/       -- vault self-knowledge (query with /ask or browse directly)
-  ops/config.yaml        -- edit this to adjust dimensions without re-running init
+  ops/methodology/         -- vault self-knowledge (query with /skill:ask or browse directly)
+  ops/config.yaml          -- edit this to adjust dimensions without re-running init
 
 Kernel Validation: [PASS count] / 15 passed
 [Any warnings to address]
 
-IMPORTANT: Restart Claude Code now to activate skills and hooks.
-  Skills and hooks take effect after restart — they are not available in the current session.
-
 Next steps:
-  1. Quit and restart Claude Code (required — skills won't work until you do)
+  1. Run /reload to activate generated skills and extension
   2. Read your CLAUDE.md -- it's your complete methodology
   3. Try /skill:help to see all available commands
-  4. [If qmd not installed: "Install qmd for semantic search: npm install -g @tobilu/qmd (or bun install -g @tobilu/qmd), then run qmd init, qmd update, qmd embed"]
+  4. [If qmd not installed: "Install qmd for semantic search: bun install -g @tobilu/qmd, then run qmd init, qmd update, qmd embed"]
   5. [If personality not enabled: "Run /skill:architect later to tune the agent's voice"]
   6. Try /skill:tutorial for a guided walkthrough
 

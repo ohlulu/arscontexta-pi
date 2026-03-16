@@ -84,7 +84,7 @@ Gather the vault's current state:
 3. List all installed skills:
    ```bash
    # Find all skill directories with SKILL.md
-   for dir in .claude/skills/*/; do
+   for dir in .pi/skills/*/; do
      skill=$(basename "$dir")
      version=$(grep '^version:' "$dir/SKILL.md" 2>/dev/null | head -1 | awk -F'"' '{print $2}')
      gen_from=$(grep '^generated_from:' "$dir/SKILL.md" 2>/dev/null | head -1 | awk -F'"' '{print $2}')
@@ -97,7 +97,7 @@ Gather the vault's current state:
 5. Check for user modifications:
    ```bash
    # Detect skills modified after generation
-   for dir in .claude/skills/*/; do
+   for dir in .pi/skills/*/; do
      skill=$(basename "$dir")
      file="$dir/SKILL.md"
      [[ ! -f "$file" ]] && continue
@@ -284,7 +284,7 @@ For each approved upgrade:
 mkdir -p ops/skills-archive
 SKILL_NAME="{skill-name}"
 DATE=$(date +%Y-%m-%d)
-cp ".claude/skills/${SKILL_NAME}/SKILL.md" \
+cp ".pi/skills/${SKILL_NAME}/SKILL.md" \
    "ops/skills-archive/${SKILL_NAME}-${DATE}.md"
 ```
 
@@ -329,7 +329,7 @@ After applying all approved upgrades:
 1. **Kernel validation** — run kernel checks to confirm structural invariants hold:
    ```bash
    # Verify skill files are valid
-   for dir in .claude/skills/*/; do
+   for dir in .pi/skills/*/; do
      [[ -f "$dir/SKILL.md" ]] || echo "MISSING: $dir/SKILL.md"
    done
    ```
@@ -339,7 +339,7 @@ After applying all approved upgrades:
 3. **Vocabulary check** — confirm upgraded skills use domain vocabulary consistently:
    ```bash
    # Spot-check that vocabulary markers were resolved
-   grep -l '{vocabulary\.' .claude/skills/*/SKILL.md 2>/dev/null
+   grep -l '{vocabulary\.' .pi/skills/*/SKILL.md 2>/dev/null
    # Should return nothing — all markers should be resolved
    ```
 

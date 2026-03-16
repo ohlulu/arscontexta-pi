@@ -81,7 +81,7 @@ Detect the platform and find the system's key files:
 
 ```
 Check filesystem:
-  .claude/ directory exists         -> platform = "claude-code"
+  .pi/ directory exists             -> platform = "pi"
   Neither                           -> platform = "minimal"
 ```
 

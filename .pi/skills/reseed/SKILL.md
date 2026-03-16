@@ -85,9 +85,9 @@ grep -rl '^type: moc' notes/ | wc -l
 # Templates
 ls templates/*.md 2>/dev/null | wc -l
 # Skills (platform-dependent)
-ls .claude/skills/*/SKILL.md 2>/dev/null | wc -l
+ls .pi/skills/*/SKILL.md 2>/dev/null | wc -l
 # Hooks
-ls .claude/hooks/*.sh 2>/dev/null | wc -l
+ls .pi/extensions/arscontexta-hooks/index.ts 2>/dev/null | wc -l
 # Self space
 ls self/*.md self/memory/*.md 2>/dev/null | wc -l
 # Inbox
@@ -297,7 +297,7 @@ Modify `_schema` blocks, add/remove fields, update enum values. Templates are th
 Regenerate sections affected by dimension changes. Preserve user customizations documented in `ops/user-overrides.md` (if it exists). Apply vocabulary transformation throughout.
 
 ### Step 5: Update skills
-If skill vocabulary needs updating, modify skill files in `.claude/skills/`.
+If skill vocabulary needs updating, modify skill files in `.pi/skills/`.
 
 ### Step 6: Update hooks
 If automation level changed, add or remove hooks. Update hook paths to match any renamed folders.

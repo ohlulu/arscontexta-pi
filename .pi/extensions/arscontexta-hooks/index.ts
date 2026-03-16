@@ -248,9 +248,12 @@ export default function (pi: ExtensionAPI) {
     }
   });
 
+  // ─── Helper: is file-modifying tool? ──────────────────────────
+  const FILE_TOOLS = new Set(["Write", "write", "Edit", "edit"]);
+
   // ─── 2. Write Validate ───────────────────────────────────────
   pi.on("tool_result", async (event, _ctx) => {
-    if (event.toolName !== "Write" && event.toolName !== "write") return;
+    if (!FILE_TOOLS.has(event.toolName)) return;
 
     const vaultPath = resolveVaultPath(_ctx.cwd);
     if (!vaultPath) return;
@@ -304,7 +307,7 @@ export default function (pi: ExtensionAPI) {
 
   // ─── 3. Auto Commit ─────────────────────────────────────────
   pi.on("tool_result", async (event, _ctx) => {
-    if (event.toolName !== "Write" && event.toolName !== "write") return;
+    if (!FILE_TOOLS.has(event.toolName)) return;
 
     const vaultPath = resolveVaultPath(_ctx.cwd);
     if (!vaultPath) return;
