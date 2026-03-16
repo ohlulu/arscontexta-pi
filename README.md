@@ -212,6 +212,12 @@ Llull's rotating wheels generated truth through combination. Bruno's memory whee
 
 ---
 
+## Differences from Original
+
+See [docs/DIFF-REPORT.md](docs/DIFF-REPORT.md) for a complete comparison between this pi port and the original Claude Code plugin.
+
+---
+
 ## Credits
 
 Forked from [agenticnotetaking/arscontexta](https://github.com/agenticnotetaking/arscontexta) (Claude Code plugin v0.8.0). Original research methodology, kernel specification, and 249 research claims by [agenticnotetaking](https://github.com/agenticnotetaking).
