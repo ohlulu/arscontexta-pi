@@ -305,57 +305,90 @@ export default function (pi: ExtensionAPI) {
     }
   });
 
-  // ─── 3. Auto Commit ─────────────────────────────────────────
+  // ─── 3. Auto Commit (debounced) ──────────────────────────────
+  // Debounce: batch rapid writes into a single commit.
+  // Eliminates git lock race when agent writes multiple files quickly.
+  let commitTimer: ReturnType<typeof setTimeout> | null = null;
+  let pendingFiles: Set<string> = new Set();
+  let pendingVaultPath: string | null = null;
+
+  const COMMIT_DELAY_MS = 2000;
+
+  function flushCommit() {
+    commitTimer = null;
+    const vaultPath = pendingVaultPath;
+    const files = [...pendingFiles];
+    pendingFiles.clear();
+    pendingVaultPath = null;
+
+    if (!vaultPath || files.length === 0) return;
+
+    try {
+      const isGit = safeExecFile("git", ["-C", vaultPath, "rev-parse", "--is-inside-work-tree"], vaultPath);
+      if (isGit !== "true") return;
+
+      // Stage each pending file
+      for (const f of files) {
+        safeExecFile("git", ["-C", vaultPath, "add", "--", f], vaultPath);
+      }
+
+      // Also stage ops/sessions/ if it exists
+      const sessionsDir = join(vaultPath, "ops", "sessions");
+      if (existsSync(sessionsDir)) {
+        safeExecFile("git", ["-C", vaultPath, "add", "--", "ops/sessions/"], vaultPath);
+      }
+
+      // Check for staged changes
+      try {
+        execFileSync("git", ["-C", vaultPath, "diff", "--cached", "--quiet"], {
+          cwd: vaultPath, timeout: 5000,
+        });
+        return; // No staged changes
+      } catch {
+        // Has staged changes — continue
+      }
+
+      // Build commit message
+      let msg: string;
+      if (files.length === 1) {
+        msg = `Auto: ${relative(vaultPath, files[0])}`;
+      } else {
+        msg = `Auto: ${files.length} files`;
+      }
+
+      safeExecFile("git", ["-C", vaultPath, "commit", "-m", msg, "--no-verify"], vaultPath);
+    } catch {
+      // Silent failure — auto-commit is best-effort
+    }
+  }
+
   pi.on("tool_result", async (event, _ctx) => {
     if (!FILE_TOOLS.has(event.toolName)) return;
 
     const vaultPath = resolveVaultPath(_ctx.cwd);
     if (!vaultPath) return;
 
-    // Check config
     if (readVaultConfig(vaultPath, "git") !== "true") return;
 
-    // Extract file path
     const filePath: string = (event.input as { path?: string })?.path ?? "";
     if (!filePath) return;
 
-    // Only auto-commit files inside the vault
     const absPath = resolve(filePath);
     const relToVault = relative(vaultPath, absPath);
     if (relToVault.startsWith("..")) return;
 
-    // Non-blocking async commit — scoped to written file only
-    (async () => {
-      try {
-        // Check if vault is a git repo
-        const isGit = safeExecFile("git", ["-C", vaultPath, "rev-parse", "--is-inside-work-tree"], vaultPath);
-        if (isGit !== "true") return;
+    // Accumulate file, reset timer
+    pendingVaultPath = vaultPath;
+    pendingFiles.add(absPath);
+    if (commitTimer) clearTimeout(commitTimer);
+    commitTimer = setTimeout(flushCommit, COMMIT_DELAY_MS);
+  });
 
-        // Stage ONLY the written file (not -A which would grab unrelated changes)
-        safeExecFile("git", ["-C", vaultPath, "add", "--", absPath], vaultPath);
-
-        // Also stage ops/sessions/ if it exists (session tracking files)
-        const sessionsDir = join(vaultPath, "ops", "sessions");
-        if (existsSync(sessionsDir)) {
-          safeExecFile("git", ["-C", vaultPath, "add", "--", "ops/sessions/"], vaultPath);
-        }
-
-        // Check for staged changes
-        try {
-          execFileSync("git", ["-C", vaultPath, "diff", "--cached", "--quiet"], {
-            cwd: vaultPath, timeout: 5000,
-          });
-          return; // Exit code 0 = no staged changes
-        } catch {
-          // Exit code 1 = has staged changes — continue
-        }
-
-        // Commit with file-path-safe message (no shell interpolation)
-        const msg = `Auto: ${relToVault}`;
-        safeExecFile("git", ["-C", vaultPath, "commit", "-m", msg, "--no-verify"], vaultPath);
-      } catch {
-        // Silent failure — auto-commit is best-effort
-      }
-    })();
+  // Flush on shutdown so last writes aren't lost
+  pi.on("session_shutdown", async () => {
+    if (commitTimer) {
+      clearTimeout(commitTimer);
+      flushCommit();
+    }
   });
 }
