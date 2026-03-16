@@ -1,4 +1,6 @@
-# Ars Contexta
+# Ars Contexta for Pi
+
+> **Fork of [agenticnotetaking/arscontexta](https://github.com/agenticnotetaking/arscontexta)** — ported from Claude Code plugin to [pi](https://github.com/badlogic/pi-mono) coding agent.
 
 **A second brain for your agent.**
 
@@ -6,7 +8,7 @@ A [pi](https://github.com/badlogic/pi-mono) skill pack that generates complete k
 
 No templates. No configuration. Just conversation.
 
-**v0.9.0** · pi skills + extension · MIT
+**v0.1.0** · pi skills + extension · MIT
 
 ---
 
@@ -210,6 +212,12 @@ Llull's rotating wheels generated truth through combination. Bruno's memory whee
 
 ---
 
+## Credits
+
+Forked from [agenticnotetaking/arscontexta](https://github.com/agenticnotetaking/arscontexta) (Claude Code plugin v0.8.0). Original research methodology, kernel specification, and 249 research claims by [agenticnotetaking](https://github.com/agenticnotetaking).
+
+This port adapts the system for the [pi coding agent](https://github.com/badlogic/pi-mono): TypeScript extension replacing bash hooks, cross-project vault access, and pi-native skill format.
+
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE). Original work © agenticnotetaking, pi port © ohlulu.
