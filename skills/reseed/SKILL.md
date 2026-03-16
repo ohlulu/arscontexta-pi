@@ -24,23 +24,23 @@ Analyze structural drift and re-derive: **$ARGUMENTS**
 Read these during the re-derivation phases:
 
 **Core references:**
-- `../../reference/interaction-constraints.md` -- coherence rules (hard blocks, soft warns, cascades)
-- `../../reference/derivation-validation.md` -- kernel validation and coherence tests
-- `../../reference/three-spaces.md` -- three-space architecture and boundary rules
-- `../../reference/failure-modes.md` -- failure mode taxonomy and domain vulnerability matrix
+- `../reference/interaction-constraints.md` -- coherence rules (hard blocks, soft warns, cascades)
+- `../reference/derivation-validation.md` -- kernel validation and coherence tests
+- `../reference/three-spaces.md` -- three-space architecture and boundary rules
+- `../reference/failure-modes.md` -- failure mode taxonomy and domain vulnerability matrix
 
 **Configuration references:**
-- `../../reference/dimension-claim-map.md` -- research claims informing each dimension
-- `../../reference/methodology.md` -- universal principles
-- `../../reference/vocabulary-transforms.md` -- domain-native vocabulary mappings
-- `../../reference/tradition-presets.md` -- pre-validated configuration points
-- `../../reference/personality-layer.md` -- personality derivation dimensions
-- `../../reference/evolution-lifecycle.md` -- seed-evolve-reseed lifecycle, reseed triggers and guardrails
-- `../../reference/self-space.md` -- identity generation rules, identity vs configuration distinction
+- `../reference/dimension-claim-map.md` -- research claims informing each dimension
+- `../reference/methodology.md` -- universal principles
+- `../reference/vocabulary-transforms.md` -- domain-native vocabulary mappings
+- `../reference/tradition-presets.md` -- pre-validated configuration points
+- `../reference/personality-layer.md` -- personality derivation dimensions
+- `../reference/evolution-lifecycle.md` -- seed-evolve-reseed lifecycle, reseed triggers and guardrails
+- `../reference/self-space.md` -- identity generation rules, identity vs configuration distinction
 
 **Validation:**
-- `../../reference/kernel.yaml` -- the 12 non-negotiable primitives
-- `../../reference/validate-kernel.sh` -- kernel validation script
+- `../reference/kernel.yaml` -- the 12 non-negotiable primitives
+- `../reference/validate-kernel.sh` -- kernel validation script
 
 ---
 
@@ -176,7 +176,7 @@ The re-derivation should answer for each dimension:
 
 ### Vocabulary re-evaluation
 
-Read `../../reference/vocabulary-transforms.md`. Compare the current vocabulary mapping against how the user actually talks about their system (evidence from session logs, observations, user-facing text in notes). If the user has developed their own vocabulary that differs from the mapping, adopt the user's terms.
+Read `../reference/vocabulary-transforms.md`. Compare the current vocabulary mapping against how the user actually talks about their system (evidence from session logs, observations, user-facing text in notes). If the user has developed their own vocabulary that differs from the mapping, adopt the user's terms.
 
 ### Personality re-evaluation
 
@@ -186,7 +186,7 @@ If personality was derived at init, check whether the personality dimensions sti
 
 ## PHASE 4: Check Coherence
 
-Apply the full coherence validation from `../../reference/interaction-constraints.md`:
+Apply the full coherence validation from `../reference/interaction-constraints.md`:
 
 ### Pass 1: Hard constraint check
 
@@ -209,11 +209,11 @@ Trace each changed dimension through its cascade chain. Verify that downstream d
 
 ### Pass 4: Three-space boundary check
 
-Using `../../reference/three-spaces.md`, verify the re-derived architecture maintains clean boundaries. Check for each of the six conflation patterns.
+Using `../reference/three-spaces.md`, verify the re-derived architecture maintains clean boundaries. Check for each of the six conflation patterns.
 
 ### Pass 5: Kernel validation (15 primitives)
 
-Using `../../reference/derivation-validation.md`, verify the re-derived system will pass all 15 kernel primitives.
+Using `../reference/derivation-validation.md`, verify the re-derived system will pass all 15 kernel primitives.
 
 ---
 
@@ -336,7 +336,7 @@ Run the full validation suite on the re-derived system.
 
 ### Kernel validation (15 primitives)
 
-Run `../../reference/validate-kernel.sh` if available, otherwise manually check each primitive:
+Run `../reference/validate-kernel.sh` if available, otherwise manually check each primitive:
 
 1. markdown-yaml -- valid YAML frontmatter on all notes
 2. wiki-links -- all wiki links resolve

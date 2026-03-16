@@ -287,16 +287,16 @@ Read the reference files:
 
 | Reference | What It Contains | When To Use |
 |-----------|-----------------|-------------|
-| `../../reference/dimension-claim-map.md` | Which research claims inform which dimensions | Mapping friction to dimension adjustments |
-| `../../reference/interaction-constraints.md` | How dimension choices create pressure on others | Cascade analysis for proposed changes |
-| `../../reference/methodology.md` | Universal principles and processing pipeline | Grounding recommendations in first principles |
-| `../../reference/failure-modes.md` | 10 failure modes with domain vulnerability matrix | Connecting friction to known failure patterns |
-| `../../reference/tradition-presets.md` | Named points in configuration space | Alternative configurations to consider |
-| `../../reference/vocabulary-transforms.md` | Universal-to-domain term mapping | Ensuring output uses domain vocabulary |
-| `../../reference/three-spaces.md` | Self/notes/ops architecture and boundary rules | Three-space boundary analysis |
-| `../../reference/derivation-validation.md` | Validation tests for derived systems | Post-change validation criteria |
-| `../../reference/evolution-lifecycle.md` | Seed-evolve-reseed patterns, friction-driven adoption | When to evolve vs when to reseed |
-| `../../reference/self-space.md` | Agent identity generation and self/ architecture | Self-space related recommendations |
+| `../reference/dimension-claim-map.md` | Which research claims inform which dimensions | Mapping friction to dimension adjustments |
+| `../reference/interaction-constraints.md` | How dimension choices create pressure on others | Cascade analysis for proposed changes |
+| `../reference/methodology.md` | Universal principles and processing pipeline | Grounding recommendations in first principles |
+| `../reference/failure-modes.md` | 10 failure modes with domain vulnerability matrix | Connecting friction to known failure patterns |
+| `../reference/tradition-presets.md` | Named points in configuration space | Alternative configurations to consider |
+| `../reference/vocabulary-transforms.md` | Universal-to-domain term mapping | Ensuring output uses domain vocabulary |
+| `../reference/three-spaces.md` | Self/notes/ops architecture and boundary rules | Three-space boundary analysis |
+| `../reference/derivation-validation.md` | Validation tests for derived systems | Post-change validation criteria |
+| `../reference/evolution-lifecycle.md` | Seed-evolve-reseed patterns, friction-driven adoption | When to evolve vs when to reseed |
+| `../reference/self-space.md` | Agent identity generation and self/ architecture | Self-space related recommendations |
 
 ### Research Matching Process
 

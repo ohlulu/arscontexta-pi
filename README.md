@@ -25,7 +25,7 @@ Edit `~/.pi/agent/settings.json`:
 ```json
 {
   "skills": [
-    "~/Developer/arscontexta-pi/.pi/skills"
+    "~/Developer/arscontexta-pi/skills"
   ]
 }
 ```
@@ -35,7 +35,7 @@ Edit `~/.pi/agent/settings.json`:
 Symlink the extension to your global pi extensions:
 
 ```bash
-ln -s ~/Developer/arscontexta-pi/.pi/extensions/arscontexta-hooks \
+ln -s ~/Developer/arscontexta-pi/extensions/arscontexta-hooks \
       ~/.pi/agent/extensions/arscontexta-hooks
 ```
 

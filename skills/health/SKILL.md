@@ -26,7 +26,7 @@ Read these files to configure domain-specific behavior:
 
 2. **`ops/config.yaml`** — processing depth, thresholds
 
-3. **Three-space reference** — `../../reference/three-spaces.md` for boundary rules (load only for full and three-space modes)
+3. **Three-space reference** — `../reference/three-spaces.md` for boundary rules (load only for full and three-space modes)
 
 4. **Templates** — read template files to understand required schema fields for validation
 
@@ -98,7 +98,7 @@ done
 - `description` field is non-empty (not just present)
 - `topics` field contains at least one wiki link
 
-**If `validate-kernel.sh` exists** in `../../reference/`, run it and include results.
+**If `validate-kernel.sh` exists** in `../reference/`, run it and include results.
 
 **Thresholds:**
 
@@ -249,7 +249,7 @@ For each {vocabulary.note}:
 
 **What it checks:** Content respects the boundaries between self/, {vocabulary.notes}/, and ops/. Each space has a purpose — conflating them degrades search quality, navigation, and trust.
 
-**Before running this check:** Read `../../reference/three-spaces.md` for the full boundary specification.
+**Before running this check:** Read `../reference/three-spaces.md` for the full boundary specification.
 
 **Six conflation patterns to detect:**
 

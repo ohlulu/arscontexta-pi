@@ -20,18 +20,18 @@ The difference is derivation: understanding WHO this person is, WHAT they need, 
 Read these files to understand the methodology and available components. Read them BEFORE starting any phase.
 
 **Core references (always read):**
-- `../../reference/kernel.yaml` -- the 15 kernel primitives (with enforcement levels)
-- `../../reference/interaction-constraints.md` -- dimension coupling rules, hard/soft constraint checks
-- `../../reference/failure-modes.md` -- 10 failure modes with domain vulnerability matrix
-- `../../reference/vocabulary-transforms.md` -- domain-native vocabulary mappings (6 transformation levels)
-- `../../reference/personality-layer.md` -- personality derivation (4 dimensions, conflict resolution, artifact transformation)
-- `../../reference/three-spaces.md` -- three-space architecture (self/notes/ops separation rules)
-- `../../reference/use-case-presets.md` -- 3 presets with pre-validated configurations
-- `../../reference/conversation-patterns.md` -- 5 worked examples validating derivation heuristics
+- `../reference/kernel.yaml` -- the 15 kernel primitives (with enforcement levels)
+- `../reference/interaction-constraints.md` -- dimension coupling rules, hard/soft constraint checks
+- `../reference/failure-modes.md` -- 10 failure modes with domain vulnerability matrix
+- `../reference/vocabulary-transforms.md` -- domain-native vocabulary mappings (6 transformation levels)
+- `../reference/personality-layer.md` -- personality derivation (4 dimensions, conflict resolution, artifact transformation)
+- `../reference/three-spaces.md` -- three-space architecture (self/notes/ops separation rules)
+- `../reference/use-case-presets.md` -- 3 presets with pre-validated configurations
+- `../reference/conversation-patterns.md` -- 5 worked examples validating derivation heuristics
 
 **Generation references (read during Phase 5):**
-- `../../reference/generators/claude-md.md` -- CLAUDE.md generation template
-- `../../reference/generators/features/*.md` -- composable feature blocks for context file composition
+- `../reference/generators/claude-md.md` -- CLAUDE.md generation template
+- `../reference/generators/features/*.md` -- composable feature blocks for context file composition
 
 ---
 
@@ -333,7 +333,7 @@ Signals that clearly override defaults get applied. Signals that are ambiguous l
 
 ### Step 3b: Cascade Resolution
 
-Once primary dimensions are set, cascade through interaction constraints. Read `../../reference/interaction-constraints.md` for the full cascade rules.
+Once primary dimensions are set, cascade through interaction constraints. Read `../reference/interaction-constraints.md` for the full cascade rules.
 
 Key cascades:
 - Atomic granularity -> pressure toward explicit linking, deep navigation, heavier processing
@@ -345,7 +345,7 @@ For cascaded values: confidence = INFERRED (0.2). User signals ALWAYS override c
 
 ### Step 3c: Vocabulary Derivation
 
-Build the complete vocabulary mapping for all 6 transformation levels (see `../../reference/vocabulary-transforms.md`):
+Build the complete vocabulary mapping for all 6 transformation levels (see `../reference/vocabulary-transforms.md`):
 
 1. **User's own words** -- highest priority. If they said "book note," use "book note."
 2. **Preset table** -- fallback when user has not named a concept
@@ -361,7 +361,7 @@ For novel domains (no preset scores above 2.0 affinity):
 
 **Default: neutral-helpful.** Personality is opt-in. The init wizard does NOT ask about personality dimensions unless conversation signals clearly indicate personality preferences.
 
-Map personality signals to four dimensions (see `../../reference/personality-layer.md`):
+Map personality signals to four dimensions (see `../reference/personality-layer.md`):
 
 | Dimension | Poles | Default |
 |-----------|-------|---------|
@@ -384,7 +384,7 @@ If personality is derived (strong signals exist), set `personality.enabled: true
 
 ### Step 3e: Coherence Validation (Three-Pass Check)
 
-Run BEFORE proceeding to the proposal. Read `../../reference/interaction-constraints.md`.
+Run BEFORE proceeding to the proposal. Read `../reference/interaction-constraints.md`.
 
 **Pass 1 -- Hard constraint check:**
 
@@ -424,7 +424,7 @@ Note active compensations in derivation rationale. Flag compensated dimensions f
 
 ### Step 3f: Failure Mode Risk Assessment
 
-Read `../../reference/failure-modes.md`. Check the derived configuration against the domain vulnerability matrix. Flag all HIGH-risk failure modes for this configuration. These get included in the generated context file's "Common Pitfalls" section.
+Read `../reference/failure-modes.md`. Check the derived configuration against the domain vulnerability matrix. Flag all HIGH-risk failure modes for this configuration. These get included in the generated context file's "Common Pitfalls" section.
 
 ### Step 3g: Full Automation Configuration
 
@@ -623,7 +623,7 @@ The inbox folder is always generated. It provides zero-friction capture regardle
 
 This is the most critical generation step. The context file IS the system.
 
-**For pi:** Generate `CLAUDE.md` using `../../reference/generators/claude-md.md` template.
+**For pi:** Generate `CLAUDE.md` using `../reference/generators/claude-md.md` template.
 **For Minimal:** Generate `README.md` as self-contained conventions document.
 
 **Context file composition algorithm:**
@@ -631,7 +631,7 @@ This is the most critical generation step. The context file IS the system.
 ```
 Step 1: Read generator template for the platform.
 
-Step 2: Select feature blocks from ../../reference/generators/features/.
+Step 2: Select feature blocks from ../reference/generators/features/.
   Always-included blocks (11): wiki-links, processing-pipeline, schema, maintenance, self-evolution, methodology-knowledge, session-rhythm, templates, ethical-guardrails, helper-functions, graph-analysis
   Conditional blocks: based on derived dimensions (see Active Feature Blocks in derivation.md)
 
@@ -1271,31 +1271,31 @@ Apply vocabulary transformation to the template: field labels in comments and ex
 
 Generate ALL skills for the detected platform. Every vault ships with the complete skill set from day one. Full automation is the default — users opt down, never up.
 
-**Skill source templates live at `../../skills/`.** Each subdirectory contains a `SKILL.md` template that must be read, vocabulary-transformed, and written to the user's skills directory.
+**Skill source templates live at `../skills/`.** Each subdirectory contains a `SKILL.md` template that must be read, vocabulary-transformed, and written to the user's skills directory.
 
 The 16 skill sources to install:
 
 | Source Directory | Skill Name | Category |
 |-----------------|------------|----------|
-| `../../skills/reduce/` | reduce | Processing |
-| `../../skills/reflect/` | reflect | Processing |
-| `../../skills/reweave/` | reweave | Processing |
-| `../../skills/verify/` | verify | Processing |
-| `../../skills/validate/` | validate | Processing |
-| `../../skills/seed/` | seed | Orchestration |
-| `../../skills/ralph/` | ralph | Orchestration |
-| `../../skills/pipeline/` | pipeline | Orchestration |
-| `../../skills/tasks/` | tasks | Orchestration |
-| `../../skills/stats/` | stats | Navigation |
-| `../../skills/graph/` | graph | Navigation |
-| `../../skills/next/` | next | Navigation |
-| `../../skills/learn/` | learn | Growth |
-| `../../skills/remember/` | remember | Growth |
-| `../../skills/rethink/` | rethink | Evolution |
-| `../../skills/refactor/` | refactor | Evolution |
+| `../skills/reduce/` | reduce | Processing |
+| `../skills/reflect/` | reflect | Processing |
+| `../skills/reweave/` | reweave | Processing |
+| `../skills/verify/` | verify | Processing |
+| `../skills/validate/` | validate | Processing |
+| `../skills/seed/` | seed | Orchestration |
+| `../skills/ralph/` | ralph | Orchestration |
+| `../skills/pipeline/` | pipeline | Orchestration |
+| `../skills/tasks/` | tasks | Orchestration |
+| `../skills/stats/` | stats | Navigation |
+| `../skills/graph/` | graph | Navigation |
+| `../skills/next/` | next | Navigation |
+| `../skills/learn/` | learn | Growth |
+| `../skills/remember/` | remember | Growth |
+| `../skills/rethink/` | rethink | Evolution |
+| `../skills/refactor/` | refactor | Evolution |
 
 For each skill:
-1. Read `../../skills/[name]/SKILL.md`
+1. Read `../skills/[name]/SKILL.md`
 2. Apply vocabulary transformation — rename and update ALL internal references using the vocabulary mapping from `ops/derivation.md`
 3. Adjust skill metadata (ensure frontmatter follows Agent Skills spec)
 4. Write the transformed SKILL.md to the user's skills directory
@@ -1516,7 +1516,7 @@ If git is already initialized (existing repo), skip `git init` and just commit t
 
 ### Kernel Validation
 
-Run all 15 primitive checks against the generated system. Use `../../reference/validate-kernel.sh` if available. Otherwise manually verify:
+Run all 15 primitive checks against the generated system. Use `../reference/validate-kernel.sh` if available. Otherwise manually verify:
 
 1. **markdown-yaml** -- Every .md file has valid YAML frontmatter? (>95% threshold)
 2. **wiki-links** -- All wiki links resolve to existing files? (>90% threshold)
@@ -1589,7 +1589,7 @@ Note: Plugin commands use the format `/skill:command-name`. List all commands ex
 
 Guide the user to capture their first note. This is where the system stops being abstract and becomes real.
 
-**If a preset was selected:** Check `../../presets/[preset]/starter/` for domain-specific starter notes. Use the most relevant starter as a seed:
+**If a preset was selected:** Check `../reference/presets/[preset]/starter/` for domain-specific starter notes. Use the most relevant starter as a seed:
 
 1. Present a starter note appropriate to the domain (e.g., a research claim, a personal reflection, a project decision)
 2. Ask the user: "Here's a starter [domain:note] to get you going. Want to customize it, or shall I save it as-is?"

@@ -227,7 +227,7 @@ Agent 寫入 vault 檔案後，自動 git add + commit。
 my-vault/
 ├── .arscontexta           # vault marker + config（git: true, session_capture: true）
 ├── CLAUDE.md              # context file（agent 的操作手冊）
-├── .pi/skills/            # 16 個客製化 skills（用你的領域詞彙）
+├── skills/            # 16 個客製化 skills（用你的領域詞彙）
 ├── self/                  # agent 的持久記憶（可選）
 │   ├── identity.md        # 我是誰
 │   ├── methodology.md     # 我怎麼工作
@@ -280,7 +280,7 @@ git clone <repo> ~/Developer/arscontexta-pi
 { "skills": ["~/Developer/arscontexta-pi/.pi/skills"] }
 
 # 3. Symlink extension
-ln -s ~/Developer/arscontexta-pi/.pi/extensions/arscontexta-hooks \
+ln -s ~/Developer/arscontexta-pi/extensions/arscontexta-hooks \
       ~/.pi/agent/extensions/arscontexta-hooks
 
 # 4. 設定 vault 路徑（跨專案存取用）

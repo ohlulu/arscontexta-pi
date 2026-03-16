@@ -75,7 +75,7 @@ If domain name equals universal name, show just the name:
 
 ## Step 4: Discover Commands
 
-Scan `../../skills/` dynamically:
+Scan `../skills/` dynamically:
 - Subdirectories containing `SKILL.md` (e.g., `reduce/SKILL.md`)
 
 Extract `name:` and `description:` from each frontmatter. Do NOT hardcode the command list.
