@@ -18,19 +18,19 @@ allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 
 Read these files to configure recommendation behavior:
 
-1. **`../reference/tradition-presets.md`** — tradition and use-case presets
+1. **`../../reference/tradition-presets.md`** — tradition and use-case presets
    - Pre-validated coherence points in the 8-dimension space
    - Starting points for customization, not final answers
 
-2. **`../reference/methodology.md`** — universal methodology principles
+2. **`../../reference/methodology.md`** — universal methodology principles
 
-3. **`../reference/components.md`** — component blueprints (what can be toggled)
+3. **`../../reference/components.md`** — component blueprints (what can be toggled)
 
-4. **`../reference/dimension-claim-map.md`** — maps each dimension position to supporting research claims
+4. **`../../reference/dimension-claim-map.md`** — maps each dimension position to supporting research claims
 
-5. **`../reference/interaction-constraints.md`** — hard blocks, soft warns, cascade effects between dimensions
+5. **`../../reference/interaction-constraints.md`** — hard blocks, soft warns, cascade effects between dimensions
 
-6. **`../reference/claim-map.md`** — topic navigation for the research graph
+6. **`../../reference/claim-map.md`** — topic navigation for the research graph
 
 If any reference file is missing, note the gap but continue with available information. The recommendation degrades gracefully — fewer citations, same structure.
 
@@ -125,7 +125,7 @@ These assumptions affect the recommendation. Correct any that don't match.
 
 ### 2a. Read Presets
 
-Read `../reference/tradition-presets.md`. This file contains:
+Read `../../reference/tradition-presets.md`. This file contains:
 - **Tradition presets** — Zettelkasten, PARA, Evergreen, Cornell, etc.
 - **Use-case presets** — research, creative writing, engineering, therapy, etc.
 
@@ -169,7 +169,7 @@ Starting from [Preset A] and adjusting [specific dimensions] toward [Preset B].
 
 ### 3a. Topic-Based Search
 
-Use `../reference/claim-map.md` to identify which research topics apply to the user's use case. Read the claim map and identify relevant topic clusters.
+Use `../../reference/claim-map.md` to identify which research topics apply to the user's use case. Read the claim map and identify relevant topic clusters.
 
 ### 3b. Semantic Search
 
@@ -202,7 +202,7 @@ Collect 5-15 relevant claims. You won't cite all of them — but you need a pool
 
 ### 4a. Read Dimension-Claim Map
 
-Read `../reference/dimension-claim-map.md`. This maps each dimension position to the research claims that support it.
+Read `../../reference/dimension-claim-map.md`. This maps each dimension position to the research claims that support it.
 
 ### 4b. Determine Each Position
 
@@ -270,7 +270,7 @@ For each dimension, assign confidence based on signal strength:
 
 ### 5a. Read Constraints
 
-Read `../reference/interaction-constraints.md`.
+Read `../../reference/interaction-constraints.md`.
 
 ### 5b. Check for Hard Blocks
 
@@ -430,7 +430,7 @@ Granularity → atomic (high confidence):
 
 When invoked with `--compare [A] [B]`:
 
-1. Read both presets from `../reference/tradition-presets.md`
+1. Read both presets from `../../reference/tradition-presets.md`
 2. Present a side-by-side comparison:
 
 ```

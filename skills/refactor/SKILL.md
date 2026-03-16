@@ -165,7 +165,7 @@ For content-impacting changes:
 
 ### Interaction Constraint Check
 
-Read `../reference/interaction-constraints.md` and check:
+Read `../../reference/interaction-constraints.md` and check:
 
 1. **Hard blocks:** Would the new configuration create a combination that WILL fail?
    - Example: atomic granularity + 2-tier navigation at high volume
@@ -249,7 +249,7 @@ echo "[list of changes]" >> ops/changelog.md
 For each skill affected by the dimension changes:
 
 1. Read the current skill from the generated skills directory
-2. Consult `../reference/` for the latest skill generation approach
+2. Consult `../../reference/` for the latest skill generation approach
 3. Apply vocabulary transformation from derivation-manifest
 4. Apply processing depth settings from the new config
 5. Write the regenerated skill

@@ -22,20 +22,20 @@ Add a new knowledge domain: **$ARGUMENTS**
 Read these during derivation phases:
 
 **Composition rules:**
-- `../reference/derivation-validation.md` -- Test 4 (Multi-Domain Composition) validates the pattern
-- `../reference/three-spaces.md` -- three-space architecture (shared across domains)
-- `../reference/interaction-constraints.md` -- coherence validation for domain config
+- `../../reference/derivation-validation.md` -- Test 4 (Multi-Domain Composition) validates the pattern
+- `../../reference/three-spaces.md` -- three-space architecture (shared across domains)
+- `../../reference/interaction-constraints.md` -- coherence validation for domain config
 
 **Domain configuration:**
-- `../reference/vocabulary-transforms.md` -- domain-native term mapping
-- `../reference/tradition-presets.md` -- pre-validated domain configurations
-- `../reference/use-case-presets.md` -- 3 presets with configurations
-- `../reference/dimension-claim-map.md` -- research backing for dimension positions
-- `../reference/failure-modes.md` -- domain vulnerability matrix
+- `../../reference/vocabulary-transforms.md` -- domain-native term mapping
+- `../../reference/tradition-presets.md` -- pre-validated domain configurations
+- `../../reference/use-case-presets.md` -- 3 presets with configurations
+- `../../reference/dimension-claim-map.md` -- research backing for dimension positions
+- `../../reference/failure-modes.md` -- domain vulnerability matrix
 
 **Validation:**
-- `../reference/kernel.yaml` -- the 12 non-negotiable primitives
-- `../reference/validate-kernel.sh` -- kernel validation script
+- `../../reference/kernel.yaml` -- the 12 non-negotiable primitives
+- `../../reference/validate-kernel.sh` -- kernel validation script
 
 ---
 
@@ -126,12 +126,12 @@ Do NOT ask about dimensions directly. Listen for them in natural conversation.
 
 For each adjustable dimension, determine the position for the new domain:
 - User signals (highest priority)
-- Closest use-case preset from `../reference/use-case-presets.md`
+- Closest use-case preset from `../../reference/use-case-presets.md`
 - Cascade from system-level dimensions
 
 ### 3b. Build vocabulary mapping
 
-Read `../reference/vocabulary-transforms.md` for the transformation table.
+Read `../../reference/vocabulary-transforms.md` for the transformation table.
 
 Priority order:
 1. User's own words from conversation
@@ -186,7 +186,7 @@ If any collisions are detected, resolve them before proceeding.
 
 ## PHASE 4: Check Composition Rules
 
-Read `../reference/derivation-validation.md` (Test 4: Multi-Domain Composition) for the validated composition pattern.
+Read `../../reference/derivation-validation.md` (Test 4: Multi-Domain Composition) for the validated composition pattern.
 
 Verify each composition rule:
 
@@ -216,7 +216,7 @@ The new domain's methodology guide should load only when working in that domain,
 
 ### Coherence check
 
-Run the new domain's configuration through `../reference/interaction-constraints.md`:
+Run the new domain's configuration through `../../reference/interaction-constraints.md`:
 - Hard constraint violations between new domain config and system-level dimensions
 - Soft constraint warnings specific to the new domain
 - Cascade effects on existing domain(s)

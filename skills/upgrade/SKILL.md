@@ -136,8 +136,8 @@ Read from the plugin's four content tiers:
 
 | Tier | Path | What It Contains |
 |------|------|------------------|
-| Methodology graph | `../reference/methodology/` | All content — filter by `kind:` field (research/guidance/example) |
-| Reference docs | `../reference/` | WHAT — structured reference documents and dimension maps |
+| Methodology graph | `../../reference/methodology/` | All content — filter by `kind:` field (research/guidance/example) |
+| Reference docs | `../../reference/` | WHAT — structured reference documents and dimension maps |
 
 Notes in `methodology/` are differentiated by their `kind:` frontmatter field:
 - `kind: research` — WHY: principles and cognitive science grounding (213 claims)
