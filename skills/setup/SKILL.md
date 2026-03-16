@@ -1643,7 +1643,7 @@ Next steps:
 ### Conditional Next Steps
 
 Include these based on system state:
-- If qmd not installed and semantic-search is active: npm/bun install instructions + qmd init/update/embed + `.mcp.json` contract
+- If qmd not installed and semantic-search is active: npm install instructions + qmd init/update/embed + `.mcp.json` contract
 - If personality not enabled: mention `/skill:architect` for future voice tuning once the vault has 50+ notes
 - If any kernel checks failed: specific remediation instructions
 
@@ -1672,3 +1672,4 @@ These apply to every generation run. Do not shortcut any of them.
 9. **Discovery-first is enforced.** Every note, every MOC, every template is optimized for future agent discovery. Description quality, MOC membership, title composability.
 
 10. **Personality never contradicts methodology.** A playful agent still enforces quality gates. A warm agent still requires composability checks. Personality affects HOW methodology is communicated, never WHETHER it is enforced.
+ed.

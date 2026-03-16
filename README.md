@@ -184,7 +184,7 @@ Zettelkasten · Cornell Note-Taking · Evergreen Notes · PARA · GTD · Memory 
 [qmd](https://github.com/tobi/qmd) adds concept matching across vocabularies. Not required — the system works with ripgrep + MOC traversal.
 
 ```bash
-bun install -g @tobilu/qmd
+npm install -g @tobilu/qmd
 cd your-vault/
 qmd init
 qmd collection add . --name notes --mask "notes/**/*.md"
