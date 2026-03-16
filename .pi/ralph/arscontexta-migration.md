@@ -42,12 +42,18 @@ Migrate `bak/` (Claude Code plugin) to `.pi/` (pi coding agent) per `.pi/MIGRATI
 - [x] Implement auto-commit handler (git -C vaultPath)
 
 ### Phase 4: Agent
-- [ ] Port `knowledge-guide` agent definition
+- [x] Port `knowledge-guide` agent definition
 
 ### Phase 5: README
-- [ ] Rewrite README.md for pi distribution
+- [x] Rewrite README.md for pi distribution
 
 ### Phase 6: Archive + Verify
-- [ ] Archive bak/ to `archive/claude-code-original` branch
-- [ ] Verify: skill loading (26 skills in available_skills)
-- [ ] Verify: extension loads without error
+- [x] Archive bak/ to `archive/claude-code-original` branch
+- [x] Verify: skill loading (26 skills in available_skills)
+- [x] Verify: extension loads without error
+
+## Notes
+- Archive branch: `archive/claude-code-original` preserves full bak/ history
+- Reference docs (.pi/reference/) contain historical `mcp__qmd` mentions — these are documentation, not executable code
+- Extension file: 365 lines, covers all 3 hooks + resolveVaultPath()
+- All 26 skills verified: zero CLAUDE_PLUGIN_ROOT refs, zero mcp__qmd refs, zero context:fork
