@@ -51,6 +51,11 @@ default_vault: ~/Developer/my-vault
 
 This lets you operate on your vault from any project directory.
 
+> **Note:** `/skill:setup` generates a copy of skills inside `vault/.pi/skills/` for self-contained use. If you've already added the plugin's skills path to `settings.json` (step 1), delete the vault copy to avoid collisions:
+> ```bash
+> rm -rf ~/Developer/my-vault/.pi/skills
+> ```
+
 ### 4. Run setup
 
 ```bash

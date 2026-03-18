@@ -1302,6 +1302,8 @@ For each skill:
 
 **For pi:** Write to `.pi/skills/[domain-skill-name]/SKILL.md` inside the vault directory.
 
+**Skip if plugin skills already mounted:** If the user's `~/.pi/agent/settings.json` already includes the arscontexta-pi skills path (e.g. `"skills": ["~/Developer/arscontexta-pi/skills"]`), do NOT write skills to `vault/.pi/skills/`. The plugin source is the canonical copy — writing a second set into the vault causes pi to report skill name collisions on every startup. Inform the user: "Skipped vault skill generation — using plugin skills from settings.json."
+
 **CRITICAL:** Do NOT generate skills from scratch or improvise their content. Read the source template and transform it. The templates contain quality gates, anti-shortcut language, and handoff formats that must be preserved.
 
 Every generated skill must include:
