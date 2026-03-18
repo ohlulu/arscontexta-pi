@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 Based on [Keep a Changelog](https://keepachangelog.com/).
 
-## Unreleased
+## [0.2.0] — Unreleased
 
 ### Added
 - Session transcript capture on shutdown — saves conversation to `ops/sessions/<timestamp>.md` with user/assistant text and tool call summaries, enabling `/remember --mine` to scan for friction patterns.
