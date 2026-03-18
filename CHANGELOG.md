@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 Based on [Keep a Changelog](https://keepachangelog.com/).
 
+## Unreleased
+
+### Added
+- Session transcript capture on shutdown — saves conversation to `ops/sessions/<timestamp>.md` with user/assistant text and tool call summaries, enabling `/remember --mine` to scan for friction patterns.
+
+### Fixed
+- Maintenance signal for unprocessed sessions no longer fires false positives — now counts unmined `.md` transcripts instead of `.json` timestamp files.
+- Restored `../../reference/` paths in skills (one level was missing after repo flatten).
+- Use `npm` instead of `bun` for qmd install (`bun` lacks SQLite vec support).
+
+### Changed
+- Setup skill skips vault `.pi/skills/` generation when plugin skills are already mounted via `settings.json`, preventing name collisions on startup.
+- README documents the skill collision scenario and how to resolve it.
+
+### Docs
+- Added English diff report (`docs/DIFF-REPORT.md`) comparing pi port to original Claude Code plugin.
+- Added fork attribution in LICENSE and README.
+
 ## [0.1.0] — 2026-03-16
 
 First release as a pi coding agent skill pack. Ported from [arscontexta](https://github.com/agenticnotetaking/arscontexta) Claude Code plugin v0.8.0.
@@ -41,7 +59,7 @@ First release as a pi coding agent skill pack. Ported from [arscontexta](https:/
 - `platforms/` (20 files) — multi-platform adapter layer; pi is the only target.
 - `scripts/sync-thinking.sh` — replaced by git version control.
 - `skill.json` files (26) — pi reads SKILL.md frontmatter only.
-- Session capture Stop hook — functionality covered by session_start tracking + per-write auto-commit.
+- ~~Session capture Stop hook~~ — restored in Unreleased as transcript capture on `session_shutdown`.
 
 ### Known Differences from Original
 - `context: fork` not available in pi — pipeline isolation handled by ars contexta ralph skill's subagent instructions; standalone heavy skills (setup, reseed) run in current context.
