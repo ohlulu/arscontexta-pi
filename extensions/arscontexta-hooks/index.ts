@@ -2,9 +2,10 @@
  * Ars Contexta — Pi Extension
  *
  * Ports the 4 Claude Code hooks to pi's extension system:
- *   1. Session Orient  — inject vault tree, identity, goals, maintenance signals
- *   2. Write Validate  — schema enforcement on notes in knowledge space
- *   3. Auto Commit     — git auto-commit after writes to vault
+ *   1. Session Orient     — inject vault tree, identity, goals, maintenance signals
+ *   2. Write Validate     — schema enforcement on notes in knowledge space
+ *   3. Auto Commit        — git auto-commit after writes to vault
+ *   4. Transcript Capture — save session conversation to ops/sessions/ on shutdown
  *
  * Vault resolution: supports both "cwd is vault" and "cross-project via config".
  * Config: ~/.config/arscontexta.yaml → default_vault: <path>
@@ -85,6 +86,96 @@ export default function (pi: ExtensionAPI) {
     } catch {
       return "";
     }
+  }
+
+  function countUnminedSessions(dir: string): number {
+    if (!existsSync(dir)) return 0;
+    try {
+      return readdirSync(dir)
+        .filter((f) => f.endsWith(".md"))
+        .filter((f) => {
+          const content = safeReadFile(join(dir, f));
+          return !content.includes("mined: true");
+        })
+        .length;
+    } catch {
+      return 0;
+    }
+  }
+
+  // Format session entries into a mineable markdown transcript.
+  // Keeps user + assistant text + tool call summaries. Skips tool output and thinking.
+  function formatTranscript(entries: any[], sessionTimestamp: string): string | null {
+    const lines: string[] = [];
+    let hasContent = false;
+
+    const date = sessionTimestamp.replace(/T.*/, "").replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
+    lines.push("---");
+    lines.push(`description: Session transcript ${date}`);
+    lines.push(`started: ${sessionTimestamp}`);
+    lines.push("---");
+    lines.push("");
+    lines.push(`# Session ${date}`);
+    lines.push("");
+
+    for (const entry of entries) {
+      if (entry.type === "compaction") {
+        lines.push("## [Compacted Context]");
+        lines.push("");
+        if (entry.summary) lines.push(entry.summary);
+        lines.push("");
+        hasContent = true;
+        continue;
+      }
+
+      if (entry.type !== "message") continue;
+      const msg = entry.message;
+      if (!msg || !msg.role) continue;
+
+      if (msg.role === "user") {
+        lines.push("## User");
+        lines.push("");
+        const content = msg.content;
+        if (typeof content === "string") {
+          lines.push(content);
+          hasContent = true;
+        } else if (Array.isArray(content)) {
+          for (const part of content) {
+            if (part.type === "text") {
+              lines.push(part.text);
+              hasContent = true;
+            }
+          }
+        }
+        lines.push("");
+      } else if (msg.role === "assistant") {
+        lines.push("## Assistant");
+        lines.push("");
+        const content = msg.content;
+        if (Array.isArray(content)) {
+          for (const part of content) {
+            if (part.type === "text") {
+              lines.push(part.text);
+              hasContent = true;
+            } else if (part.type === "toolCall") {
+              const args = part.arguments || {};
+              let summary = part.name;
+              if (args.path) summary += ` \`${args.path}\``;
+              else if (args.command) {
+                const cmd = String(args.command).split("\n")[0].slice(0, 100);
+                summary += ` \`${cmd}\``;
+              }
+              lines.push(`> 🔧 ${summary}`);
+            }
+            // Skip thinking content — not useful for friction mining
+          }
+        }
+        lines.push("");
+      }
+      // Skip toolResult entries — noise for friction mining
+    }
+
+    return hasContent ? lines.join("\n") : null;
   }
 
   // ─── 1. Session Orient ───────────────────────────────────────
@@ -195,7 +286,7 @@ export default function (pi: ExtensionAPI) {
     const tensCount = countFiles(join(vaultPath, "ops", "tensions"), ".md");
     if (tensCount >= 5) signals.push(`⚠️ ${tensCount} unresolved tensions → /skill:rethink`);
 
-    const sessCount = countFiles(join(vaultPath, "ops", "sessions"), ".json") - 1; // exclude current.json
+    const sessCount = countUnminedSessions(join(vaultPath, "ops", "sessions"));
     if (sessCount >= 5) signals.push(`⚠️ ${sessCount} unprocessed sessions → /skill:remember`);
 
     const inboxCount = countFiles(join(vaultPath, "inbox"), ".md");
@@ -384,8 +475,49 @@ export default function (pi: ExtensionAPI) {
     commitTimer = setTimeout(flushCommit, COMMIT_DELAY_MS);
   });
 
-  // Flush on shutdown so last writes aren't lost
-  pi.on("session_shutdown", async () => {
+  // ─── 4. Session Transcript Capture ─────────────────────────
+  // Save conversation transcript to ops/sessions/ on shutdown.
+  // Enables /remember --mine to scan for friction patterns.
+  pi.on("session_shutdown", async (_event, ctx) => {
+    const vaultPath = resolveVaultPath(ctx.cwd);
+
+    if (vaultPath && readVaultConfig(vaultPath, "session_capture") === "true") {
+      try {
+        const sessionsDir = join(vaultPath, "ops", "sessions");
+        const currentFile = join(sessionsDir, "current.json");
+
+        if (existsSync(currentFile)) {
+          const current = JSON.parse(readFileSync(currentFile, "utf-8"));
+          const timestamp = current.started;
+
+          if (timestamp) {
+            const entries = ctx.sessionManager.getBranch();
+            const transcript = formatTranscript(entries, timestamp);
+
+            if (transcript) {
+              writeFileSync(join(sessionsDir, `${timestamp}.md`), transcript);
+              writeFileSync(
+                currentFile,
+                JSON.stringify({ ...current, status: "completed" }, null, 2)
+              );
+
+              if (readVaultConfig(vaultPath, "git") === "true") {
+                safeExecFile("git", ["-C", vaultPath, "add", "ops/sessions/"], vaultPath);
+                safeExecFile(
+                  "git",
+                  ["-C", vaultPath, "commit", "-m", `Session end: ${timestamp}`, "--quiet", "--no-verify"],
+                  vaultPath
+                );
+              }
+            }
+          }
+        }
+      } catch {
+        // Silent failure — session capture is best-effort
+      }
+    }
+
+    // Flush pending auto-commits so last writes aren't lost
     if (commitTimer) {
       clearTimeout(commitTimer);
       flushCommit();
