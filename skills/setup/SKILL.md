@@ -1150,20 +1150,22 @@ vocabulary:
   topic_map: "[domain term]"    # e.g., "topic map", "theme", "decision register"
   hub: "[domain term]"          # e.g., "hub", "home", "overview"
 
-  # Level 5: Process verbs
-  reduce: "[domain term]"       # e.g., "reduce", "surface", "document"
-  reflect: "[domain term]"      # e.g., "reflect", "find patterns", "link decisions"
-  reweave: "[domain term]"      # e.g., "reweave", "revisit", "update"
-  verify: "[domain term]"       # e.g., "verify", "check resonance", "validate"
-  validate: "[domain term]"     # e.g., "validate", "check schema", "audit"
-  rethink: "[domain term]"      # e.g., "rethink", "reassess", "retrospect"
+  # Level 5: Process verbs (fixed — must match skill names, no aliases)
+  reduce: "reduce"
+  reflect: "reflect"
+  reweave: "reweave"
+  verify: "verify"
+  validate: "validate"
+  rethink: "rethink"
 
-  # Level 6: Command names (as users invoke them)
-  cmd_reduce: "[/domain-verb]"  # e.g., "/reduce", "/surface", "/document"
-  cmd_reflect: "[/domain-verb]" # e.g., "/reflect", "/find-patterns", "/link-decisions"
-  cmd_reweave: "[/domain-verb]" # e.g., "/reweave", "/revisit", "/update-old"
-  cmd_verify: "[/domain-verb]"  # e.g., "/verify", "/check", "/audit"
-  cmd_rethink: "[/domain-verb]" # e.g., "/rethink", "/reassess", "/retrospect"
+  # Level 6: Command names (fixed — must match skill names, no aliases)
+  # Pi does not support command aliases. Using different names here
+  # creates confusion: output says "/connect" but user must type "/reflect".
+  cmd_reduce: "/reduce"
+  cmd_reflect: "/reflect"
+  cmd_reweave: "/reweave"
+  cmd_verify: "/verify"
+  cmd_rethink: "/rethink"
 
   # Level 7: Extraction categories (domain-specific, from conversation)
   extraction_categories:
