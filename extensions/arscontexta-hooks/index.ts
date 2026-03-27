@@ -306,10 +306,13 @@ export default function (pi: ExtensionAPI) {
     }
 
     // Inject into conversation
+    // orient_display (default "true") controls TUI visibility;
+    // the message always reaches the LLM for vault awareness.
+    const showOrient = readVaultConfig(vaultPath, "orient_display") !== "false";
     pi.sendMessage({
       customType: "arscontexta-orient",
       content: lines.join("\n"),
-      display: true,
+      display: showOrient,
     });
 
     // Session tracking: write current session file
