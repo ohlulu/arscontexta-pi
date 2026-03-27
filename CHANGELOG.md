@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 
 Based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [0.2.0] — Unreleased
+## [0.3.0] — 2026-03-27
+
+### Fixed
+- Prevented duplicate session transcripts on `/reload` — now tracks conversation entry count at `session_start` and only captures entries added after that index; bare reloads produce no transcript.
+- Hardcoded process verbs and command names to actual skill names in `/setup` — pi doesn't support command aliases, so domain-derived verb aliases (e.g. `/connect` for `/reflect`) caused user confusion.
+
+## [0.2.0] — 2026-03-17
 
 ### Added
 - Session transcript capture on shutdown — saves conversation to `ops/sessions/<timestamp>.md` with user/assistant text and tool call summaries, enabling `/remember --mine` to scan for friction patterns.
