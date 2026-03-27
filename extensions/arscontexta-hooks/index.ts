@@ -178,8 +178,19 @@ export default function (pi: ExtensionAPI) {
     return hasContent ? lines.join("\n") : null;
   }
 
+  // ─── Session State ───────────────────────────────────────────
+  // Track entry count at session start to avoid duplicate transcripts on /reload.
+  // On shutdown we only capture entries after this index.
+  let entryCountAtStart = 0;
+
   // ─── 1. Session Orient ───────────────────────────────────────
   pi.on("session_start", async (_event, ctx) => {
+    // Snapshot current conversation length so shutdown only captures the delta
+    try {
+      entryCountAtStart = ctx.sessionManager.getBranch().length;
+    } catch {
+      entryCountAtStart = 0;
+    }
     const vaultPath = resolveVaultPath(ctx.cwd);
     if (!vaultPath) return;
 
@@ -491,8 +502,26 @@ export default function (pi: ExtensionAPI) {
           const timestamp = current.started;
 
           if (timestamp) {
-            const entries = ctx.sessionManager.getBranch();
-            const transcript = formatTranscript(entries, timestamp);
+            const allEntries = ctx.sessionManager.getBranch();
+            // Only capture entries added AFTER session_start to avoid duplicates on /reload
+            const newEntries = allEntries.slice(entryCountAtStart);
+
+            // Count meaningful user messages in the new portion
+            const newUserMessages = newEntries.filter(
+              (e: any) => e.type === "message" && e.message?.role === "user"
+            ).length;
+
+            // Skip transcript if no meaningful new user interaction (e.g. bare /reload)
+            if (newUserMessages < 1) {
+              // Still mark session as completed
+              writeFileSync(
+                currentFile,
+                JSON.stringify({ ...current, status: "completed" }, null, 2)
+              );
+              return;
+            }
+
+            const transcript = formatTranscript(newEntries, timestamp);
 
             if (transcript) {
               writeFileSync(join(sessionsDir, `${timestamp}.md`), transcript);
