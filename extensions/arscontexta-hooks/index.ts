@@ -12,6 +12,8 @@
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import { keyHint } from "@mariozechner/pi-coding-agent";
+import { Box, Text } from "@mariozechner/pi-tui";
 import { existsSync, readFileSync, mkdirSync, writeFileSync, readdirSync, statSync, renameSync } from "node:fs";
 import { join, resolve, basename, relative } from "node:path";
 import { homedir } from "node:os";
@@ -183,6 +185,32 @@ export default function (pi: ExtensionAPI) {
   // On shutdown we only capture entries after this index.
   let entryCountAtStart = 0;
 
+  // ─── Orient Message Renderer ──────────────────────────────────
+  // Collapsed: compact one-liner with key stats.
+  // Expanded (ctrl+o): full vault context.
+  pi.registerMessageRenderer("arscontexta-orient", (message, { expanded }, theme) => {
+    const details = message.details as { summary?: string; signals?: string[] } | undefined;
+
+    if (!expanded) {
+      // Compact view: single line
+      const check = theme.fg("success", "✓");
+      const label = theme.fg("accent", "vault");
+      const stats = theme.fg("dim", details?.summary ?? "connected");
+      const hint = theme.fg("dim", `(${keyHint("app.tools.expand", "expand")})`);
+      const signalBadge = details?.signals?.length
+        ? " " + theme.fg("warning", `⚠ ${details.signals.length}`)
+        : "";
+      const box = new Box(1, 1, (t) => theme.bg("customMessageBg", t));
+      box.addChild(new Text(`${check} ${label} ${stats}${signalBadge} ${hint}`, 0, 0));
+      return box;
+    }
+
+    // Expanded view: full orient content
+    const box = new Box(1, 1, (t) => theme.bg("customMessageBg", t));
+    box.addChild(new Text(message.content, 0, 0));
+    return box;
+  });
+
   // ─── 1. Session Orient ───────────────────────────────────────
   // Extracted orient + session-tracking logic so it runs on both
   // initial load (session_start) and new-session switches (session_switch).
@@ -305,14 +333,20 @@ export default function (pi: ExtensionAPI) {
       lines.push("");
     }
 
-    // Inject into conversation
-    // orient_display (default "true") controls TUI visibility;
-    // the message always reaches the LLM for vault awareness.
-    const showOrient = readVaultConfig(vaultPath, "orient_display") !== "false";
+    // Collect summary stats for the compact renderer
+    const noteCount = countFiles(join(vaultPath, "notes"), ".md");
+    const summaryParts: string[] = [];
+    if (isLocal) summaryParts.push("cwd");
+    else summaryParts.push("remote");
+    summaryParts.push(`${noteCount} notes`);
+    if (signals.length > 0) summaryParts.push(`${signals.length} signal${signals.length > 1 ? "s" : ""}`);
+
+    // Inject into conversation — always sent to LLM, renderer handles TUI display
     pi.sendMessage({
       customType: "arscontexta-orient",
       content: lines.join("\n"),
-      display: showOrient,
+      display: true,
+      details: { summary: summaryParts.join(" · "), signals },
     });
 
     // Session tracking: write current session file
