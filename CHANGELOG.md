@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 Based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.4.1] — 2026-03-28
+
+### Fixed
+- Fixed orient dedup check using wrong entry type (`custom` → `custom_message`), causing `pi -c` and `/reload` to always re-inject orient.
+
 ## [0.4.0] — 2026-03-28
 
 ### Added
