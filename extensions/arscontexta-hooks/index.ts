@@ -394,7 +394,7 @@ export default function (pi: ExtensionAPI) {
     // Skip orient if session already has one (e.g. pi -c resuming)
     const branch = ctx.sessionManager.getBranch();
     const alreadyOriented = branch.some(
-      (e: any) => e.type === "custom" && e.customType === "arscontexta-orient"
+      (e: any) => e.type === "custom_message" && e.customType === "arscontexta-orient"
     );
     if (!alreadyOriented) {
       runOrient(ctx);
