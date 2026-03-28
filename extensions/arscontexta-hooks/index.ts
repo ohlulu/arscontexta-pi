@@ -390,7 +390,15 @@ export default function (pi: ExtensionAPI) {
     } catch {
       entryCountAtStart = 0;
     }
-    runOrient(ctx);
+
+    // Skip orient if session already has one (e.g. pi -c resuming)
+    const branch = ctx.sessionManager.getBranch();
+    const alreadyOriented = branch.some(
+      (e: any) => e.type === "custom" && e.customType === "arscontexta-orient"
+    );
+    if (!alreadyOriented) {
+      runOrient(ctx);
+    }
   });
 
   // /new fires session_switch, not session_start — re-orient so the
