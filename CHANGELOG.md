@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 Based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.4.0] — 2026-03-28
+
+### Added
+- Collapsible orient renderer — session orient now displays as a compact one-liner (`✓ vault remote · 45 notes`) by default; press `ctrl+o` to expand full vault context. LLM always receives the full content.
+- Orient fires on `/new` — previously only `session_start` was handled; now `session_switch` (reason `"new"`) also triggers orient injection.
+
+### Fixed
+- Orient no longer re-injects on `/reload` or `pi -c` — detects existing orient entry in session branch and skips duplicate injection.
+
 ## [0.3.0] — 2026-03-27
 
 ### Fixed
