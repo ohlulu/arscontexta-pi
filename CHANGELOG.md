@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 Based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.4.2] — 2026-04-04
+
+### Fixed
+- Migrated `session_switch` handler to unified `session_start` event with reason-based dispatch (pi 0.65.0 compatibility). `/new`, `/resume`, and `/fork` all route through a single handler now.
+
 ## [0.4.1] — 2026-03-28
 
 ### Fixed
