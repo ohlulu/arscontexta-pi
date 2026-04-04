@@ -212,8 +212,8 @@ export default function (pi: ExtensionAPI) {
   });
 
   // ─── 1. Session Orient ───────────────────────────────────────
-  // Extracted orient + session-tracking logic so it runs on both
-  // initial load (session_start) and new-session switches (session_switch).
+  // Extracted orient + session-tracking logic.
+  // Called from session_start with reason-based dispatch.
   function runOrient(ctx: { cwd: string; sessionManager: { getBranch(): any[] } }) {
     const vaultPath = resolveVaultPath(ctx.cwd);
     if (!vaultPath) return;
@@ -383,7 +383,9 @@ export default function (pi: ExtensionAPI) {
     }
   }
 
-  pi.on("session_start", async (_event, ctx) => {
+  // session_start fires for all transitions since pi 0.65.0:
+  //   reason: "startup" | "reload" | "new" | "resume" | "fork"
+  pi.on("session_start", async (event, ctx) => {
     // Snapshot current conversation length so shutdown only captures the delta
     try {
       entryCountAtStart = ctx.sessionManager.getBranch().length;
@@ -391,28 +393,22 @@ export default function (pi: ExtensionAPI) {
       entryCountAtStart = 0;
     }
 
-    // Skip orient if session already has one (e.g. pi -c resuming)
-    const branch = ctx.sessionManager.getBranch();
-    const alreadyOriented = branch.some(
-      (e: any) => e.type === "custom_message" && e.customType === "arscontexta-orient"
-    );
-    if (!alreadyOriented) {
-      runOrient(ctx);
-    }
-  });
+    const reason = (event as any).reason;
 
-  // /new fires session_switch, not session_start — re-orient so the
-  // fresh session gets vault context.
-  pi.on("session_switch", async (event, ctx) => {
-    // Only orient on new sessions, not /resume (which already has context)
-    if ((event as any).reason === "new") {
-      // Reset transcript capture baseline for the new session
-      try {
-        entryCountAtStart = ctx.sessionManager.getBranch().length;
-      } catch {
-        entryCountAtStart = 0;
-      }
+    if (reason === "new") {
+      // /new: always orient the fresh session
       runOrient(ctx);
+    } else if (reason === "resume" || reason === "fork") {
+      // /resume, /fork: session already has context — skip orient
+    } else {
+      // "startup", "reload": orient if not already present
+      const branch = ctx.sessionManager.getBranch();
+      const alreadyOriented = branch.some(
+        (e: any) => e.type === "custom_message" && e.customType === "arscontexta-orient"
+      );
+      if (!alreadyOriented) {
+        runOrient(ctx);
+      }
     }
   });
 
